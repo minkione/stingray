@@ -23,6 +23,7 @@
 PRODUCT_PACKAGES := \
         HoloSpiralWallpaper \
         LiveWallpapersPicker \
+        rild \
         VisualizationWallpapers
 
 # Inherit from those products. Most specific first.
