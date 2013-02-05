@@ -35,7 +35,7 @@ echo "file:end:txt:/${hostName}-ipv6_route.txt"
 # and writes.  Use a value that is not likely to false-positive, but also
 # provides adequate protection against hanging for a long time.
 for cmd in "state" "files" "atvc"; do
-    echo "-o wrigley $cmd" | nc -w 10 192.168.20.2 3002
+    echo "-o wrigley $cmd" | nc -w 10 192.168.157.2 3002
 done
 echo "file:begin:txt:wrigley/AdditionalExtractionInstructions.txt"
 echo "To extract logs.gz and panic.gz, you must do the following:"
@@ -52,6 +52,6 @@ echo "the inconvenience."
 echo "file:end:txt:wrigley/AdditionalExtractionInstructions.txt"
 for cmd in "logs" "panic"; do
     echo "file:begin:bin:wrigley/${cmd}.gz"
-    echo "$cmd" | nc -w 10 192.168.20.2 3002 | gzip | base64 -e
+    echo "$cmd" | nc -w 10 192.168.157.2 3002 | gzip | base64 -e
     echo "file:end:bin:wrigley/${cmd}.gz"
 done

@@ -25,7 +25,7 @@
 # TODO: Implement a connection-based auth scheme for Wrigley control and
 # TODO: diagnostics ports.
 
-# NOTE: Our usage of the static 192.168.20.0/24 for the Wrigley IP address can
+# NOTE: Our usage of the static 192.168.157.0/24 for the Wrigley IP address can
 # cause conflicts with DHCP-assigned WiFi addresses.  When coupled with the
 # firewall below, this ensures that WiFi will not work if we get assigned an
 # address in that range.
@@ -35,11 +35,11 @@
 IPTABLES="/system/bin/iptables"
 
 #### filter OUTPUT ####
-# Setup an explicit sub-chain for 192.168.20.2.  This way we only burden all
+# Setup an explicit sub-chain for 192.168.157.2.  This way we only burden all
 # other packets with a single check for the IP address.
 $IPTABLES -F oem_out_wrigley # No-op on 1st inst of this script
 $IPTABLES -N oem_out_wrigley # No-op on 2nd-Nth inst of this script
-$IPTABLES -A oem_out -d 192.168.20.2 -j oem_out_wrigley
+$IPTABLES -A oem_out -d 192.168.157.2 -j oem_out_wrigley
 
 # Setup diff rules for sensitive ports vs other ports.  There are more
 # non-sensitive than sensitive ports, and the non-sensitive list is fairly
@@ -73,15 +73,15 @@ bp-tools)
     # dynamic.  So, do a blacklist instead of a whitelist.
     $IPTABLES -F oem_fwd_wrigley # No-op on 1st inst of this script
     $IPTABLES -N oem_fwd_wrigley # No-op on 2nd-Nth inst of this script
-    $IPTABLES -A oem_fwd -d 192.168.20.2 -j oem_fwd_wrigley
-    $IPTABLES -A oem_fwd -s 192.168.20.2 -j oem_fwd_wrigley
+    $IPTABLES -A oem_fwd -d 192.168.157.2 -j oem_fwd_wrigley
+    $IPTABLES -A oem_fwd -s 192.168.157.2 -j oem_fwd_wrigley
     $IPTABLES -A oem_fwd_wrigley -p tcp --dport 3265 -j REJECT
     $IPTABLES -A oem_fwd_wrigley -p tcp --dport 3267 -j REJECT
     $IPTABLES -A oem_fwd_wrigley -p tcp --dport 11000 -j REJECT
     $IPTABLES -A oem_fwd_wrigley -j ACCEPT
     ;;
 *)
-    $IPTABLES -A oem_fwd -d 192.168.20.2 -j REJECT
+    $IPTABLES -A oem_fwd -d 192.168.157.2 -j REJECT
     ;;
 esac
 
@@ -90,6 +90,6 @@ case $(getprop ro.bootmode) in
 bp-tools)
     # We must rewrite the destination address for our SUAPI logger port to the
     # address of the BLAN, because legacy tools (RTA/PST) rely on this.
-    $IPTABLES -t nat -A oem_nat_pre -p tcp -d 192.168.16.2 --dport 11006 -j DNAT --to 192.168.20.2:11006
+    $IPTABLES -t nat -A oem_nat_pre -p tcp -d 192.168.16.2 --dport 11006 -j DNAT --to 192.168.157.2:11006
     ;;
 esac
